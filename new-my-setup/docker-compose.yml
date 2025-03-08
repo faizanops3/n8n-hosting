@@ -28,8 +28,8 @@ services:
       DB_POSTGRESDB_USER: n8n_user
       DB_POSTGRESDB_PASSWORD: secure_password
       GENERIC_TIMEZONE: "UTC"
-      N8N_HOST: n8n.bloomi5.com
-      WEBHOOK_URL: https://n8n.bloomi5.com/
+      N8N_HOST: ai-n8n.bloomi5.com
+      WEBHOOK_URL: https://ai-n8n.bloomi5.com/
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
