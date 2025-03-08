@@ -33,7 +33,8 @@ services:
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
-      N8N_ENCRYPTION_KEY: "change_this_to_a_secure_random_key"
+      N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
+      # N8N_SECURE_COOKIE: false
     ports:
       - "5678:5678"
     volumes:
