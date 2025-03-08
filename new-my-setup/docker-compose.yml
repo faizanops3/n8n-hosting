@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    container_name: n8n_postgres
+    environment:
+      POSTGRES_USER: n8n_user
+      POSTGRES_PASSWORD: secure_password
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n_network
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    restart: always
+    container_name: n8n
+    depends_on:
+      - postgres
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: n8n_user
+      DB_POSTGRESDB_PASSWORD: secure_password
+      GENERIC_TIMEZONE: "UTC"
+      N8N_HOST: n8n.bloomi5.com
+      WEBHOOK_URL: https://n8n.bloomi5.com/
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
+      QUEUE_BULL_REDIS_PORT: 6379
+      N8N_ENCRYPTION_KEY: "change_this_to_a_secure_random_key"
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - n8n_network
+
+  redis:
+    image: redis:7
+    restart: always
+    container_name: n8n_redis
+    networks:
+      - n8n_network
+    volumes:
+      - redis_data:/data
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: n8n_nginx
+    depends_on:
+      - n8n
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - n8n_network
+
+networks:
+  n8n_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  n8n_data:
+  redis_data:
