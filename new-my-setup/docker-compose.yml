@@ -34,7 +34,10 @@ services:
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
       N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
-      # N8N_SECURE_COOKIE: false
+
+      # Enable User Management Without SMTP
+      N8N_USER_MANAGEMENT_DISABLED: "false"
+
     ports:
       - "5678:5678"
     volumes:
