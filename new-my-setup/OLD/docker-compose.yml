@@ -14,22 +14,12 @@ services:
     networks:
       - n8n_network
 
-  redis:
-    image: redis:7
-    restart: always
-    container_name: n8n_redis
-    networks:
-      - n8n_network
-    volumes:
-      - redis_data:/data
-
   n8n:
     image: docker.n8n.io/n8nio/n8n:latest
     restart: always
     container_name: n8n
     depends_on:
       - postgres
-      - redis
     environment:
       DB_TYPE: postgresdb
       DB_POSTGRESDB_HOST: postgres
@@ -55,28 +45,14 @@ services:
     networks:
       - n8n_network
 
-  n8n_worker:
-    image: docker.n8n.io/n8nio/n8n:latest
+  redis:
+    image: redis:7
     restart: always
-    container_name: n8n_worker
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      DB_TYPE: postgresdb
-      DB_POSTGRESDB_HOST: postgres
-      DB_POSTGRESDB_PORT: 5432
-      DB_POSTGRESDB_DATABASE: n8n
-      DB_POSTGRESDB_USER: n8n_user
-      DB_POSTGRESDB_PASSWORD: secure_password
-      EXECUTIONS_MODE: queue
-      QUEUE_BULL_REDIS_HOST: redis
-      QUEUE_BULL_REDIS_PORT: 6379
-      N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
-    volumes:
-      - n8n_data:/home/node/.n8n
+    container_name: n8n_redis
     networks:
       - n8n_network
+    volumes:
+      - redis_data:/data
 
   nginx:
     image: nginx:latest
