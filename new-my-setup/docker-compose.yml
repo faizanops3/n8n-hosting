@@ -38,11 +38,17 @@ services:
       DB_POSTGRESDB_USER: n8n_user
       DB_POSTGRESDB_PASSWORD: secure_password
       GENERIC_TIMEZONE: "UTC"
+
+      # Correct public URL and protocol for webhook registration
       N8N_HOST: ai-n8n.bloomi5.com
+      N8N_PROTOCOL: https
       WEBHOOK_URL: https://ai-n8n.bloomi5.com/
+
+      # Queue mode with Redis
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
+
       N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
 
       # Enable User Management Without SMTP
@@ -73,6 +79,7 @@ services:
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
       N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
+      N8N_PROTOCOL: https
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
