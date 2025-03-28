@@ -84,6 +84,7 @@ services:
       - n8n_data:/home/node/.n8n
     networks:
       - n8n_network
+    command: worker
 
   nginx:
     image: nginx:latest
