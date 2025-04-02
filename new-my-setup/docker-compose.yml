@@ -37,7 +37,7 @@ services:
       DB_POSTGRESDB_DATABASE: n8n
       DB_POSTGRESDB_USER: n8n_user
       DB_POSTGRESDB_PASSWORD: secure_password
-      GENERIC_TIMEZONE: "UTC"
+      GENERIC_TIMEZONE: "Asia/Kolkata"
 
       # Correct public URL and protocol for webhook registration
       N8N_HOST: ai-n8n.bloomi5.com
