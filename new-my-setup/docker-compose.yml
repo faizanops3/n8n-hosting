@@ -63,7 +63,7 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
       # - ./n8n-node-modules:/data/custom
-      - ./n8n-node-modules/node_modules:/usr/local/lib/node_modules/n8n/node_modules
+      # - ./n8n-node-modules/node_modules:/usr/local/lib/node_modules/n8n/node_modules
     networks:
       - n8n_network
 
@@ -91,7 +91,7 @@ services:
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./n8n-node-modules/node_modules:/usr/local/lib/node_modules/n8n/node_modules
+      # - ./n8n-node-modules/node_modules:/usr/local/lib/node_modules/n8n/node_modules
     networks:
       - n8n_network
     command: worker
