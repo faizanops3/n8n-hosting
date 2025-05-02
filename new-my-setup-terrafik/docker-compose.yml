@@ -41,7 +41,8 @@ services:
 
       N8N_HOST: ${DOMAIN}
       N8N_PROTOCOL: https
-      WEBHOOK_URL: https://${DOMAIN}/
+      WEBHOOK_URL: https://${DOMAIN}
+      N8N_EDITOR_BASE_URL: https://${DOMAIN}
 
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
