@@ -13,3 +13,13 @@ USER root
 RUN npm install -g lodash
 USER node
 ```
+
+write a bash script to take a backup and restore
+when this script will be executed , it will ask what do you want to do 1. backup or 2. restore
+
+lets use everything whihc is recomended ,
+
+it will ask the name of container in which this postgres database is running
+then it will ask for database credentials like, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+
+then is save the backup where this script is in the same location.
