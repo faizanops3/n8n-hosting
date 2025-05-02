@@ -44,8 +44,8 @@ services:
       N8N_PORT: 5678
       N8N_PROTOCOL: https
       N8N_LISTEN_ADDRESS: 0.0.0.0
-      WEBHOOK_URL: https://ai-n8n.bloomi5.com/
-      N8N_EDITOR_BASE_URL: https://ai-n8n.bloomi5.com/
+      WEBHOOK_URL: https://ai-n8n.bloomi5.com
+      N8N_EDITOR_BASE_URL: https://ai-n8n.bloomi5.com
       N8N_PROXY_HOPS: 1
 
       # Queue mode with Redis
