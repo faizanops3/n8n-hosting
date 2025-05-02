@@ -1,0 +1,134 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    container_name: n8n_postgres
+    environment:
+      POSTGRES_USER: n8n_user
+      POSTGRES_PASSWORD: secure_password
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n_network
+
+  redis:
+    image: redis:7
+    restart: always
+    container_name: n8n_redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n_network
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    restart: always
+    container_name: n8n
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: n8n_user
+      DB_POSTGRESDB_PASSWORD: secure_password
+      GENERIC_TIMEZONE: "Asia/Kolkata"
+
+      N8N_HOST: ai-n8n.bloomi5.com
+      N8N_PROTOCOL: https
+      WEBHOOK_URL: https://ai-n8n.bloomi5.com/
+
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
+      QUEUE_BULL_REDIS_PORT: 6379
+
+      N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
+
+      N8N_USER_MANAGEMENT_DISABLED: "false"
+      N8N_RUNNERS_ENABLED: "true"
+      OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: "true"
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+
+      NODE_FUNCTION_ALLOW_EXTERNAL: "*"
+      NODE_FUNCTION_ALLOW_BUILTIN: "*"
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`ai-n8n.bloomi5.com`)"
+      - "traefik.http.routers.n8n.entrypoints=websecure"
+      - "traefik.http.routers.n8n.tls=true"
+      - "traefik.http.routers.n8n.tls.certresolver=myresolver"
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+      - "traefik.http.middlewares.n8n-redirect.redirectscheme.scheme=https"
+    networks:
+      - n8n_network
+
+  n8n_worker:
+    image: docker.n8n.io/n8nio/n8n:latest
+    restart: always
+    container_name: n8n_worker
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: n8n_user
+      DB_POSTGRESDB_PASSWORD: secure_password
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
+      QUEUE_BULL_REDIS_PORT: 6379
+      N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
+      N8N_PROTOCOL: https
+      N8N_RUNNERS_ENABLED: "true"
+      OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: "true"
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      NODE_FUNCTION_ALLOW_EXTERNAL: "*"
+      NODE_FUNCTION_ALLOW_BUILTIN: "*"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    command: worker
+    networks:
+      - n8n_network
+
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=admin@bloomi5.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - n8n_network
+    labels:
+      - "traefik.enable=true"
+
+volumes:
+  postgres_data:
+  n8n_data:
+  redis_data:
+
+networks:
+  n8n_network:
+    driver: bridge
