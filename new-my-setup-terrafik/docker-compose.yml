@@ -39,16 +39,15 @@ services:
       DB_POSTGRESDB_PASSWORD: secure_password
       GENERIC_TIMEZONE: "Asia/Kolkata"
 
-      N8N_HOST: ai-n8n.bloomi5.com
+      N8N_HOST: ${DOMAIN}
       N8N_PROTOCOL: https
-      WEBHOOK_URL: https://ai-n8n.bloomi5.com/
+      WEBHOOK_URL: https://${DOMAIN}/
 
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
 
       N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
-
       N8N_USER_MANAGEMENT_DISABLED: "false"
       N8N_RUNNERS_ENABLED: "true"
       OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: "true"
@@ -56,17 +55,16 @@ services:
 
       NODE_FUNCTION_ALLOW_EXTERNAL: "*"
       NODE_FUNCTION_ALLOW_BUILTIN: "*"
-
     volumes:
       - n8n_data:/home/node/.n8n
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`ai-n8n.bloomi5.com`)"
+      - "traefik.http.routers.n8n.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.n8n.entrypoints=websecure"
       - "traefik.http.routers.n8n.tls=true"
       - "traefik.http.routers.n8n.tls.certresolver=myresolver"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
-      - "traefik.http.middlewares.n8n-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
     networks:
       - n8n_network
 
@@ -84,14 +82,17 @@ services:
       DB_POSTGRESDB_DATABASE: n8n
       DB_POSTGRESDB_USER: n8n_user
       DB_POSTGRESDB_PASSWORD: secure_password
+
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
+
       N8N_ENCRYPTION_KEY: "sdfsdfsd64564gffgvccvbcvbcvczxc"
       N8N_PROTOCOL: https
       N8N_RUNNERS_ENABLED: "true"
       OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: "true"
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+
       NODE_FUNCTION_ALLOW_EXTERNAL: "*"
       NODE_FUNCTION_ALLOW_BUILTIN: "*"
     volumes:
@@ -111,7 +112,7 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=admin@bloomi5.com"
+      - "--certificatesresolvers.myresolver.acme.email=${EMAIL}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
@@ -121,13 +122,11 @@ services:
       - ./letsencrypt:/letsencrypt
     networks:
       - n8n_network
-    labels:
-      - "traefik.enable=true"
 
 volumes:
   postgres_data:
-  n8n_data:
   redis_data:
+  n8n_data:
 
 networks:
   n8n_network:
