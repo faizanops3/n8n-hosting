@@ -26,7 +26,7 @@ services:
   n8n:
     build: .
     restart: always
-    container_name: n8n
+    container_name: n8n-custome
     depends_on:
       - postgres
       - redis
