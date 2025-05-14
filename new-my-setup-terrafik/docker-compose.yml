@@ -24,9 +24,9 @@ services:
       - n8n_network
 
   n8n:
-    image: docker.n8n.io/n8nio/n8n:latest
+    build: .
     restart: always
-    container_name: n8n
+    container_name: n8n-custome
     depends_on:
       - postgres
       - redis
@@ -74,7 +74,7 @@ services:
       - n8n_network
 
   n8n_worker:
-    image: docker.n8n.io/n8nio/n8n:latest
+    build: .
     restart: always
     container_name: n8n_worker
     depends_on:
