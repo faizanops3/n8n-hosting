@@ -20,7 +20,7 @@ services:
       - traefik-public
 
   n8n:
-    image: n8nio/n8n:latest
+    image: faizanops3/n8n:custom
     depends_on:
       - postgres
       - redis
@@ -70,7 +70,7 @@ services:
       - traefik-public
 
   n8n_worker:
-    image: n8nio/n8n:latest
+    image: faizanops3/n8n:custom
     depends_on:
       - postgres
       - redis
